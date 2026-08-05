@@ -1,0 +1,188 @@
+/*
+ * Design tokens.
+ *
+ * Three layers, and the boundary between them matters:
+ *
+ *   --palette-*  Raw anchors. Nine values. This is the only block to edit when
+ *                the colour scheme changes.
+ *   --ui-*       Role-named tokens for the application chrome. Theme-aware.
+ *                Application CSS consumes ONLY these, never --palette-* directly.
+ *   --doc-*      The invoice document. Frozen: no light-dark(), no theming.
+ *                Paper is white in every theme and in every print job.
+ *
+ * Theming works by switching `color-scheme` on :root (see the bottom of this
+ * file). Every --ui-* colour is a light-dark() pair, so that single property
+ * flips the whole UI — there is no second token block to keep in sync.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Layer 1: the palette                                                */
+/* ------------------------------------------------------------------ */
+
+:root {
+    /* Three neutral anchors. Every grey in the UI is mixed from these. */
+    --palette-neutral-lightest: #ffffff;
+    --palette-neutral-mid: #6b6b70;
+    --palette-neutral-darkest: #16161a;
+
+    --palette-accent: #ff00f0;
+    --palette-danger: #aa1111;
+    --palette-warning: #ccaa22;
+    --palette-success: #22aa77;
+    --palette-info: #5588cc;
+    --palette-draft: #ee99aa;
+}
+
+/* ------------------------------------------------------------------ */
+/* Layer 2: UI semantics                                               */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Intermediate shades are derived by mixing an anchor toward
+ * --palette-neutral-mid rather than being hand-picked, so moving an anchor
+ * reharmonises every surface, border and text colour together. A higher
+ * percentage means "closer to the anchor, further from grey".
+ */
+:root {
+    /* Surfaces */
+    --ui-surface-page: light-dark(
+            color-mix(in oklab, var(--palette-neutral-lightest) 92%, var(--palette-neutral-mid)),
+            var(--palette-neutral-darkest));
+    --ui-surface-raised: light-dark(
+            var(--palette-neutral-lightest),
+            color-mix(in oklab, var(--palette-neutral-darkest) 92%, var(--palette-neutral-mid)));
+    --ui-surface-input: light-dark(
+            var(--palette-neutral-lightest),
+            color-mix(in oklab, var(--palette-neutral-darkest) 86%, var(--palette-neutral-mid)));
+
+    /* The nav is brand chrome and stays dark in both themes, which is why the
+       wordmark can safely inherit --ui-text-on-nav. */
+    --ui-surface-nav: color-mix(in oklab, var(--palette-neutral-darkest) 94%, var(--palette-neutral-mid));
+    --ui-surface-nav-hover: color-mix(in oklab, var(--ui-surface-nav) 88%, var(--palette-neutral-lightest));
+
+    /* Hover fill for transparent controls on the page (not on the nav). Pulls
+       toward mid from whichever end the theme is at. */
+    --ui-surface-hover: light-dark(
+            color-mix(in oklab, var(--palette-neutral-lightest) 78%, var(--palette-neutral-mid)),
+            color-mix(in oklab, var(--palette-neutral-darkest) 78%, var(--palette-neutral-mid)));
+
+    /* Text */
+    --ui-text-primary: light-dark(
+            color-mix(in oklab, var(--palette-neutral-darkest) 88%, var(--palette-neutral-mid)),
+            color-mix(in oklab, var(--palette-neutral-lightest) 88%, var(--palette-neutral-mid)));
+    --ui-text-muted: light-dark(
+            var(--palette-neutral-mid),
+            color-mix(in oklab, var(--palette-neutral-mid) 65%, var(--palette-neutral-lightest)));
+    --ui-text-on-nav: color-mix(in oklab, var(--palette-neutral-lightest) 88%, var(--palette-neutral-mid));
+
+    /* Borders. These carry input outlines as well as separators, so they are
+       tuned to clear WCAG 1.4.11's 3:1 against every surface they sit on —
+       hence the mid anchor rather than something fainter in dark mode. */
+    --ui-border: light-dark(
+            color-mix(in oklab, var(--palette-neutral-lightest) 15%, var(--palette-neutral-mid)),
+            var(--palette-neutral-mid));
+
+    /* Accent */
+    --ui-accent: var(--palette-accent);
+    /* Foreground for anything sitting ON --ui-accent. The current accent is a
+       bright magenta, so the dark anchor wins (5.6:1 vs 3.2:1 for white).
+       Recheck this pairing if the accent ever becomes a dark colour. */
+    --ui-accent-text: var(--palette-neutral-darkest);
+    --ui-focus-ring: var(--palette-accent);
+
+    /* Destructive actions */
+    --ui-danger: var(--palette-danger);
+    --ui-danger-hover: color-mix(in oklab, var(--palette-danger) 90%, var(--palette-neutral-lightest));
+
+    /* Invoice status. Each state carries its own foreground so the pairing
+       cannot drift apart. The hues are darkened here rather than in the
+       palette: the palette holds the pure brand hue, and the token is what has
+       to be legible under small uppercase badge text. */
+    --ui-status-paid-bg: color-mix(in oklab, var(--palette-success) 75%, var(--palette-neutral-darkest));
+    --ui-status-paid-fg: var(--palette-neutral-lightest);
+    --ui-status-draft-bg: var(--palette-draft);
+    --ui-status-draft-fg: var(--palette-neutral-darkest);
+    --ui-status-sent-bg: color-mix(in oklab, var(--palette-info) 85%, var(--palette-neutral-darkest));
+    --ui-status-sent-fg: var(--palette-neutral-lightest);
+    --ui-status-void-bg: var(--palette-neutral-mid);
+    --ui-status-void-fg: var(--palette-neutral-lightest);
+
+    /* Alerts are tinted against --ui-surface-raised, which is itself a
+       light-dark() pair — that makes them theme-correct without a second set
+       of values. */
+    --ui-alert-error-bg: color-mix(in oklab, var(--palette-danger) 15%, var(--ui-surface-raised));
+    --ui-alert-error-border: color-mix(in oklab, var(--palette-danger) 40%, var(--ui-surface-raised));
+    --ui-alert-error-fg: light-dark(
+            color-mix(in oklab, var(--palette-danger) 60%, var(--palette-neutral-darkest)),
+            color-mix(in oklab, var(--palette-danger) 45%, var(--palette-neutral-lightest)));
+
+    --ui-alert-warn-bg: color-mix(in oklab, var(--palette-warning) 15%, var(--ui-surface-raised));
+    --ui-alert-warn-border: color-mix(in oklab, var(--palette-warning) 40%, var(--ui-surface-raised));
+    --ui-alert-warn-fg: light-dark(
+            color-mix(in oklab, var(--palette-warning) 60%, var(--palette-neutral-darkest)),
+            color-mix(in oklab, var(--palette-warning) 45%, var(--palette-neutral-lightest)));
+
+    --ui-alert-info-bg: color-mix(in oklab, var(--palette-info) 15%, var(--ui-surface-raised));
+    --ui-alert-info-border: color-mix(in oklab, var(--palette-info) 40%, var(--ui-surface-raised));
+    --ui-alert-info-fg: light-dark(
+            color-mix(in oklab, var(--palette-info) 60%, var(--palette-neutral-darkest)),
+            color-mix(in oklab, var(--palette-info) 45%, var(--palette-neutral-lightest)));
+}
+
+/* ------------------------------------------------------------------ */
+/* Layer 3: the invoice document                                       */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Deliberately literal. These must never become light-dark() or reference the
+ * palette: the printed invoice has to look identical no matter which theme the
+ * UI happens to be in.
+ */
+:root {
+    --doc-paper: #fff;
+    --doc-ink: #000;
+    --doc-rule: #aaa;
+    --doc-band: #e7e7e7;
+    --doc-panel: #fafafa;
+    --doc-totals: #f8f8f8;
+    --doc-edge: #eee;
+    --doc-banner-bg: #222;
+    --doc-banner-fg: #fff;
+}
+
+/* ------------------------------------------------------------------ */
+/* Typography and page geometry                                        */
+/* ------------------------------------------------------------------ */
+
+:root {
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.3125rem;
+
+    --base-font-family: "Work Sans", "Arial", sans-serif;
+
+    --page-margin: .25in;
+    --page-max-width: 8.25in;
+}
+
+/* ------------------------------------------------------------------ */
+/* Theme control                                                       */
+/* ------------------------------------------------------------------ */
+
+/*
+ * No data-theme attribute means "follow the OS". useTheme.ts removes the
+ * attribute rather than setting it to "system", so this rule applies.
+ */
+:root {
+    color-scheme: light dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}

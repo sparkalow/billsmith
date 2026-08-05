@@ -1,0 +1,281 @@
+/*
+ * Invoice document styles
+ */
+
+/* work-sans-300 - latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: url('/work-sans-v19-latin-300.woff2') format('woff2');
+}
+
+/* work-sans-regular - latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/work-sans-v19-latin-regular.woff2') format('woff2');
+}
+
+/* work-sans-700 - latin */
+@font-face {
+    font-display: swap;
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/work-sans-v19-latin-700.woff2') format('woff2');
+}
+
+/* Tokens live in tokens.css. The document below uses only --doc-* colours,
+   which are frozen — nothing here responds to the UI theme. */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    line-height: 1.2;
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    background: var(--ui-surface-page);
+    color: var(--ui-text-primary);
+    font-family: var(--base-font-family), sans-serif;
+    font-size: var(--font-size-sm);
+    font-weight: 300;
+}
+
+img, svg {
+    display: block;
+    max-width: 100%;
+}
+
+p { text-wrap: pretty; }
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+
+/* ------------------------------------------------------------------ */
+/* The invoice document                                                */
+/* ------------------------------------------------------------------ */
+
+#invoice {
+    padding: var(--page-margin);
+    max-width: var(--page-max-width, 8in);
+    margin: 0 auto;
+    background: var(--doc-paper);
+    color: var(--doc-ink);
+    position: relative;
+}
+
+#invoice header {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    padding-bottom: 1.3rem;
+}
+
+.invoice-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.invoice-date {
+    background-color: var(--doc-ink);
+    color: var(--doc-paper);
+    font-weight: bold;
+    padding: .4rem;
+    border-radius: .5rem;
+    text-align: right;
+    margin-left: auto;
+    width: fit-content;
+}
+
+.brand {
+    display: flex;
+    align-content: center;
+    gap: 2rem;
+
+    div { align-content: center; }
+
+    small {
+        padding: .3rem;
+        border-radius: .3rem;
+        background-color: var(--doc-band);
+    }
+}
+
+.brand img,
+.brand svg { max-width: 8rem; }
+
+.customer-container {
+    display: flex;
+    gap: 1rem;
+    background-color: var(--doc-panel);
+    padding: .8rem;
+    align-items: center;
+    border-radius: .5rem;
+
+    h1 {
+        height: fit-content;
+        font-size: var(--font-size-lg);
+    }
+
+    h2 { font-size: var(--font-size-md); }
+}
+
+/*
+ * Line items are a real <table>. A table is used to repeat a header across printed pages.
+ */
+.invoice-items {
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 8px solid var(--doc-edge);
+    font-size: var(--font-size-xs);
+    table-layout: fixed;
+}
+
+.invoice-items .col-date { width: 20%; }
+.invoice-items .col-description { width: 70%; }
+.invoice-items .col-hours { width: 10%; }
+
+.invoice-items th,
+.invoice-items td {
+    padding: .3rem;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: break-word;
+}
+
+.invoice-items .hours {
+    text-align: right;
+    padding-right: .5rem;
+}
+
+.invoice-item {
+    border-bottom: 1px solid var(--doc-rule);
+}
+
+.invoice-items-header {
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+}
+
+.invoice-items-header th { padding-bottom: .4rem; }
+
+.invoice-footer {
+    display: grid;
+    grid-template-columns: 65% 1fr;
+}
+
+.totals {
+    text-align: right;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column: 2/4;
+    background: var(--doc-totals);
+    align-items: center;
+    padding-right: .5rem;
+
+    label, span { border-bottom: 1px solid var(--doc-rule); }
+
+    .balance-due { font-weight: bold; }
+}
+
+.terms {
+    color: var(--doc-ink);
+    padding: 1rem;
+
+    h4 {
+        border-bottom: 1px solid var(--doc-band);
+        margin-block-end: .2rem;
+    }
+}
+
+.paid-banner {
+    position: absolute;
+    top: 3rem;
+    left: -5rem;
+    text-align: center;
+    min-width: 20rem;
+    padding: .5rem;
+    background: var(--doc-banner-bg);
+    color: var(--doc-banner-fg);
+    transform: rotate(-45deg);
+}
+
+/* ------------------------------------------------------------------ */
+/* Print                                                               */
+/* ------------------------------------------------------------------ */
+
+@media print {
+    @page {
+        size: letter portrait;
+        margin: 0.5in 0.4in;
+    }
+
+    body, html {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        padding: 0;
+        margin: 0;
+        background: var(--doc-paper) !important;
+        color: var(--doc-ink) !important;
+    }
+
+    /* Application chrome never prints. */
+    .app-chrome,
+    .no-print {
+        display: none !important;
+    }
+
+    #invoice {
+        max-width: none;
+        width: auto;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    /* A line item must never be split across a page boundary. */
+    .invoice-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* A thead repeats at the top of every printed page automatically; this is why
+       the line items are a table. */
+    .invoice-items-header {
+        display: table-header-group;
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    /* Without this the table can pick up a stray break before its first row. */
+    .invoice-items { break-before: avoid; }
+
+    /* Terms and totals stay together and never orphan onto a page of their own. */
+    .invoice-footer {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .totals { background: var(--doc-totals) !important; }
+
+    .invoice-date { background-color: var(--doc-ink) !important; }
+
+    .customer-container { background-color: var(--doc-panel) !important; }
+
+    /* The rotated banner overflows the sheet and clips badly in print. */
+    .paid-banner { display: none; }
+
+    /* Avoid stranded single lines at page boundaries. */
+    p, h1, h2, h3, h4 {
+        orphans: 3;
+        widows: 3;
+    }
+}
