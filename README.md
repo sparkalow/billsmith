@@ -46,8 +46,9 @@ The SQLite file lives at `data/invoices.db` (gitignored, along with its `-wal` a
 **Back it up with `.backup`, not `cp`.** The database runs in WAL mode, so copying the
 `.db` file alone while the server is running can capture a torn state:
 
+This is the actual command. It looks weird.
 ```bash
-sqlite3 data/invoices.db ".backup 'backups/invoices-$(date +%F).db'"
+sqlite3 data/invoices.db ".backup 'data/backups/billsmith-$(date +%F).db'"
 ```
 
 Poke around directly whenever it is useful:
@@ -69,7 +70,7 @@ These hold everywhere — schema, API, and client:
 - **`invoice_number` is TEXT.** `01012026` has a significant leading zero.
 - **Totals are derived**, never stored — see the `invoice_totals` view.
 - **Business, customer, and terms are snapshotted onto each invoice** at creation, so
-  changing your address next year does not rewrite what a 2025 invoice said.
+  changing your address next year does not rewrite what last year's invoice said.
 
 ### Migrations
 
