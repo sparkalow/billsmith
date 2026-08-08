@@ -2,32 +2,6 @@
  * Invoice document styles
  */
 
-/* work-sans-300 - latin */
-@font-face {
-    font-display: swap;
-    font-family: 'Work Sans';
-    font-style: normal;
-    font-weight: 300;
-    src: url('/work-sans-v19-latin-300.woff2') format('woff2');
-}
-
-/* work-sans-regular - latin */
-@font-face {
-    font-display: swap;
-    font-family: 'Work Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: url('/work-sans-v19-latin-regular.woff2') format('woff2');
-}
-
-/* work-sans-700 - latin */
-@font-face {
-    font-display: swap;
-    font-family: 'Work Sans';
-    font-style: normal;
-    font-weight: 700;
-    src: url('/work-sans-v19-latin-700.woff2') format('woff2');
-}
 
 /* Tokens live in tokens.css. The document below uses only --doc-* colours,
    which are frozen — nothing here responds to the UI theme. */
@@ -70,6 +44,7 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
     background: var(--doc-paper);
     color: var(--doc-ink);
     position: relative;
+    overflow: clip;
 }
 
 #invoice header {

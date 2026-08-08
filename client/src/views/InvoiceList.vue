@@ -39,7 +39,7 @@ onMounted(() => store.load());
             >
                 <div class="num">{{ invoice.invoice_number }}</div>
                 <div>{{ formatMonthYear(invoice.issue_date) }}</div>
-                <div>{{ invoice.customer_name }}</div>
+                <div class="customer-name">{{ invoice.customer_name }}</div>
                 <div class="hours">{{ formatHM(invoice.totals.total_minutes) }}</div>
                 <div><span class="badge" :class="invoice.status">{{ invoice.status }}</span></div>
                 <div class="amount">{{ formatUSD(invoice.totals.total_cents) }}</div>

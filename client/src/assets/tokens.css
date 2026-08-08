@@ -15,6 +15,24 @@
  * flips the whole UI — there is no second token block to keep in sync.
  */
 
+
+/* jetbrains-mono-regular - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/jetbrains-mono-v24-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* inter-regular - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/inter-v20-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
 /* ------------------------------------------------------------------ */
 /* Layer 1: the palette                                                */
 /* ------------------------------------------------------------------ */
@@ -87,7 +105,7 @@
     /* Foreground for anything sitting ON --ui-accent. The current accent is a
        bright magenta, so the dark anchor wins (5.6:1 vs 3.2:1 for white).
        Recheck this pairing if the accent ever becomes a dark colour. */
-    --ui-accent-text: var(--palette-neutral-darkest);
+    --ui-accent-text: var(--palette-neutral-lightest);
     --ui-focus-ring: var(--palette-accent);
 
     /* Destructive actions */
@@ -161,7 +179,8 @@
     --font-size-lg: 1.125rem;
     --font-size-xl: 1.3125rem;
 
-    --base-font-family: "Work Sans", "Arial", sans-serif;
+    --base-font-family: "Inter", "Arial", sans-serif;
+    --numeric-font-family: "JetBrains Mono", "Courier New", monospace;
 
     --page-margin: .25in;
     --page-max-width: 8.25in;
