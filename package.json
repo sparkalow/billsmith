@@ -15,11 +15,16 @@
     "build": "npm run build --workspace client",
     "start": "npm run start --workspace server",
     "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace client",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "db:migrate": "tsx scripts/migrate.ts"
   },
   "devDependencies": {
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.10.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.65.0"
   },
   "allowScripts": {
     "esbuild": true,
