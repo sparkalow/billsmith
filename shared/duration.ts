@@ -51,7 +51,7 @@ export function formatUSD(cents: number): string {
 
 /** Parse a user-entered dollar amount ("85", "$85.00", "1,200.50") into cents. */
 export function parseUSD(value: string | number): number {
-    if (typeof value === 'number') return Math.round(value * 100);
+    if (typeof value === 'number') {return Math.round(value * 100);}
     const cleaned = value.replace(/[$,\s]/g, '');
     const parsed = Number(cleaned);
     if (!Number.isFinite(parsed)) {

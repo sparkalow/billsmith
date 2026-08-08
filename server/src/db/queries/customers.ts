@@ -41,7 +41,7 @@ export function updateCustomer(
         .filter((col) => patch[col] !== undefined)
         .map((col) => [col, patch[col] ?? null] as const);
 
-    if (entries.length === 0) return getCustomer(db, id);
+    if (entries.length === 0) {return getCustomer(db, id);}
 
     const { changes } = run(
         db,

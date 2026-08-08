@@ -84,7 +84,7 @@ const liveTotals = computed<InvoiceTotals>(() => {
 const previewInvoice = computed<InvoiceDetail | null>(() => {
   const settings = settingsStore.settings;
   const customer = settingsStore.customers.find((c) => c.id === form.value.customer_id);
-  if (!settings) return null;
+  if (!settings) {return null;}
 
   const base = invoice.value;
   return {
@@ -243,9 +243,9 @@ async function save(): Promise<void> {
 }
 
 async function remove(): Promise<void> {
-  if (!invoiceId.value) return;
-  // eslint-disable-next-line no-alert
-  if (!window.confirm(`Delete invoice ${form.value.invoice_number}? This cannot be undone.`)) return;
+  if (!invoiceId.value) {return;}
+   
+  if (!window.confirm(`Delete invoice ${form.value.invoice_number}? This cannot be undone.`)) {return;}
   try {
     await store.remove(invoiceId.value);
     await router.push('/');
@@ -260,43 +260,88 @@ async function remove(): Promise<void> {
     <div class="page-header">
       <h1>{{ isNew ? 'New invoice' : `Edit ${form.invoice_number}` }}</h1>
       <div style="display: flex; gap: .5rem">
-        <button class="btn btn-secondary" type="button" @click="showPreview = !showPreview">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          @click="showPreview = !showPreview"
+        >
           {{ showPreview ? 'Hide' : 'Show' }} preview
         </button>
-        <RouterLink v-if="!isNew" class="btn btn-secondary" :to="`/invoices/${invoiceId}`">
+        <RouterLink
+          v-if="!isNew"
+          class="btn btn-secondary"
+          :to="`/invoices/${invoiceId}`"
+        >
           View
         </RouterLink>
-        <button class="btn" type="button" :disabled="!canSave" @click="save">
+        <button
+          class="btn"
+          type="button"
+          :disabled="!canSave"
+          @click="save"
+        >
           {{ saving ? 'Saving…' : 'Save' }}
         </button>
       </div>
     </div>
 
-    <div v-if="error" class="alert alert-error">{{ error }}</div>
-    <div v-if="loading" class="spinner">Loading…</div>
+    <div
+      v-if="error"
+      class="alert alert-error"
+    >
+      {{ error }}
+    </div>
+    <div
+      v-if="loading"
+      class="spinner"
+    >
+      Loading…
+    </div>
 
     <template v-else>
       <div class="card">
         <div class="field-row">
           <div class="field">
             <label for="number">Invoice number</label>
-            <input id="number" v-model="form.invoice_number" type="text"/>
+            <input
+              id="number"
+              v-model="form.invoice_number"
+              type="text"
+            >
           </div>
           <div class="field">
             <label for="customer">Customer</label>
-            <select id="customer" v-model.number="form.customer_id">
-              <option v-for="c in settingsStore.customers" :key="c.id" :value="c.id">
+            <select
+              id="customer"
+              v-model.number="form.customer_id"
+            >
+              <option
+                v-for="c in settingsStore.customers"
+                :key="c.id"
+                :value="c.id"
+              >
                 {{ c.name }}
               </option>
             </select>
           </div>
           <div class="field">
             <label for="status">Status</label>
-            <select id="status" v-model="form.status">
-              <option value="draft">Draft</option>
-              <option value="sent">Sent</option>
-              <option value="paid">Paid</option>
-              <option value="void">Void</option>
+            <select
+              id="status"
+              v-model="form.status"
+            >
+              <option value="draft">
+                Draft
+              </option>
+              <option value="sent">
+                Sent
+              </option>
+              <option value="paid">
+                Paid
+              </option>
+              <option value="void">
+                Void
+              </option>
             </select>
           </div>
         </div>
@@ -304,41 +349,81 @@ async function remove(): Promise<void> {
         <div class="field-row">
           <div class="field">
             <label for="issue">Issue date</label>
-            <input id="issue" v-model="form.issue_date" type="date"/>
+            <input
+              id="issue"
+              v-model="form.issue_date"
+              type="date"
+            >
           </div>
           <div class="field">
             <label for="due">Due date</label>
-            <input id="due" v-model="form.due_date" type="date" @input="dueDateTouched = true"/>
+            <input
+              id="due"
+              v-model="form.due_date"
+              type="date"
+              @input="dueDateTouched = true"
+            >
           </div>
           <div class="field">
             <label for="rate">Hourly rate</label>
-            <input id="rate" v-model="form.hourly_rate" type="text" inputmode="decimal"/>
+            <input
+              id="rate"
+              v-model="form.hourly_rate"
+              type="text"
+              inputmode="decimal"
+            >
           </div>
           <div class="field">
             <label for="tax">Tax rate (%)</label>
-            <input id="tax" v-model="form.tax_rate_percent" type="text" inputmode="decimal"/>
+            <input
+              id="tax"
+              v-model="form.tax_rate_percent"
+              type="text"
+              inputmode="decimal"
+            >
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2 style="font-size: var(--font-size-lg); margin-bottom: .5rem">Line items</h2>
-        <LineItemTable v-model="items" :default-date="form.issue_date"/>
+        <h2 style="font-size: var(--font-size-lg); margin-bottom: .5rem">
+          Line items
+        </h2>
+        <LineItemTable
+          v-model="items"
+          :default-date="form.issue_date"
+        />
       </div>
 
-      <div class="card" style="display: flex; justify-content: space-between; align-items: center">
+      <div
+        class="card"
+        style="display: flex; justify-content: space-between; align-items: center"
+      >
         <div>
           <strong>{{ formatUSD(liveTotals.total_cents) }}</strong>
           <span class="muted"> balance due</span>
         </div>
-        <button v-if="!isNew" class="btn btn-danger" type="button" @click="remove">
+        <button
+          v-if="!isNew"
+          class="btn btn-danger"
+          type="button"
+          @click="remove"
+        >
           Delete invoice
         </button>
       </div>
 
-      <div v-if="showPreview && previewInvoice" class="card">
-        <h2 style="font-size: var(--font-size-lg); margin-bottom: .5rem">Preview</h2>
-        <InvoiceDocument :invoice="previewInvoice" :totals-override="liveTotals"/>
+      <div
+        v-if="showPreview && previewInvoice"
+        class="card"
+      >
+        <h2 style="font-size: var(--font-size-lg); margin-bottom: .5rem">
+          Preview
+        </h2>
+        <InvoiceDocument
+          :invoice="previewInvoice"
+          :totals-override="liveTotals"
+        />
       </div>
     </template>
   </div>

@@ -31,7 +31,7 @@ export const THEME_LABELS: Record<Theme, string> = {
 function read(): Theme {
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored === 'light' || stored === 'dark' || stored === 'system') return stored;
+        if (stored === 'light' || stored === 'dark' || stored === 'system') {return stored;}
     } catch {
         /* Private browsing or a blocked storage partition. Fall through. */
     }

@@ -77,7 +77,7 @@ export function getInvoice(db: Db, id: number): InvoiceDetail | null {
          WHERE i.id = ?`,
         id,
     );
-    if (!row) return null;
+    if (!row) {return null;}
 
     const line_items = all<LineItemRow>(
         db,
@@ -126,7 +126,7 @@ export function replaceLineItems(db: Db, invoiceId: number, items: LineItemInput
 export function createInvoice(db: Db, input: CreateInvoiceInput): InvoiceDetail {
     return transaction(db, () => {
         const customer = get<CustomerRow>(db, 'SELECT * FROM customers WHERE id = ?', input.customer_id);
-        if (!customer) throw new Error(`No customer with id ${input.customer_id}`);
+        if (!customer) {throw new Error(`No customer with id ${input.customer_id}`);}
 
         const settings = get<SettingsRow>(db, 'SELECT * FROM settings WHERE id = 1')!;
 
@@ -166,7 +166,7 @@ export function createInvoice(db: Db, input: CreateInvoiceInput): InvoiceDetail 
             input.notes ?? null,
         );
 
-        if (input.line_items?.length) replaceLineItems(db, lastInsertRowid, input.line_items);
+        if (input.line_items?.length) {replaceLineItems(db, lastInsertRowid, input.line_items);}
 
         return getInvoice(db, lastInsertRowid)!;
     });
@@ -188,7 +188,7 @@ export function updateInvoice(
         .filter((col) => patch[col] !== undefined)
         .map((col) => [col, patch[col] ?? null] as const);
 
-    if (entries.length === 0) return getInvoice(db, id);
+    if (entries.length === 0) {return getInvoice(db, id);}
 
     const { changes } = run(
         db,
@@ -196,7 +196,7 @@ export function updateInvoice(
         ...entries.map(([, v]) => v as string | number | null),
         id,
     );
-    if (changes === 0) return null;
+    if (changes === 0) {return null;}
 
     // Marking an invoice paid without a date is a common slip; fill it in.
     if (patch.status === 'paid' && patch.paid_date === undefined) {

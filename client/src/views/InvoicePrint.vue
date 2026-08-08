@@ -34,35 +34,64 @@ function print(): void {
 }
 
 async function markPaid(): Promise<void> {
-    if (!invoice.value) return;
+    if (!invoice.value) {return;}
     await store.update(invoice.value.id, { status: 'paid' });
     invoice.value = await store.fetchOne(invoice.value.id);
 }
 </script>
 
 <template>
-    <div>
-        <div v-if="error" class="alert alert-error app-chrome">{{ error }}</div>
-        <div v-if="loading" class="spinner app-chrome">Loading…</div>
-
-        <template v-else-if="invoice">
-            <div class="page-header app-chrome no-print" style="max-width: 60rem; margin: 0 auto 1rem">
-                <RouterLink class="btn btn-secondary" to="/">← All invoices</RouterLink>
-                <div style="display: flex; gap: .5rem">
-                    <button
-                        v-if="invoice.status !== 'paid'"
-                        class="btn btn-secondary"
-                        type="button"
-                        @click="markPaid"
-                    >
-                        Mark paid
-                    </button>
-                    <RouterLink class="btn btn-secondary" :to="`/invoices/${invoice.id}/edit`">Edit</RouterLink>
-                    <button class="btn" type="button" @click="print">Print / Save PDF</button>
-                </div>
-            </div>
-
-            <InvoiceDocument :invoice="invoice" />
-        </template>
+  <div>
+    <div
+      v-if="error"
+      class="alert alert-error app-chrome"
+    >
+      {{ error }}
     </div>
+    <div
+      v-if="loading"
+      class="spinner app-chrome"
+    >
+      Loading…
+    </div>
+
+    <template v-else-if="invoice">
+      <div
+        class="page-header app-chrome no-print"
+        style="max-width: 60rem; margin: 0 auto 1rem"
+      >
+        <RouterLink
+          class="btn btn-secondary"
+          to="/"
+        >
+          ← All invoices
+        </RouterLink>
+        <div style="display: flex; gap: .5rem">
+          <button
+            v-if="invoice.status !== 'paid'"
+            class="btn btn-secondary"
+            type="button"
+            @click="markPaid"
+          >
+            Mark paid
+          </button>
+          <RouterLink
+            class="btn btn-secondary"
+            :to="`/invoices/${invoice.id}/edit`"
+          >
+            Edit
+          </RouterLink>
+          <button
+            class="btn"
+            type="button"
+            @click="print"
+          >
+            Print / Save PDF
+          </button>
+        </div>
+      </div>
+
+      <InvoiceDocument :invoice="invoice" />
+    </template>
+  </div>
 </template>

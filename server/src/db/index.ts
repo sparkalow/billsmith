@@ -63,7 +63,7 @@ export function migrate(db: Db, log: (msg: string) => void = () => {}): number {
         if (!Number.isInteger(version)) {
             throw new Error(`Migration "${file}" must start with an integer version`);
         }
-        if (applied.has(version)) continue;
+        if (applied.has(version)) {continue;}
 
         const sql = readFileSync(join(MIGRATIONS_DIR, file), 'utf8');
         db.exec('BEGIN');

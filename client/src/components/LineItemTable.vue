@@ -67,7 +67,7 @@ function removeRow(index: number): void {
 
 function move(index: number, delta: number): void {
     const target = index + delta;
-    if (target < 0 || target >= items.value.length) return;
+    if (target < 0 || target >= items.value.length) {return;}
     const next = [...items.value];
     const [row] = next.splice(index, 1);
     next.splice(target, 0, row!);
@@ -76,66 +76,111 @@ function move(index: number, delta: number): void {
 </script>
 
 <template>
-    <div>
-        <table class="line-item-editor">
-            <thead>
-                <tr>
-                    <th class="col-date">Date</th>
-                    <th>Description</th>
-                    <th class="col-hours">Hours</th>
-                    <th class="col-actions"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, index) in items" :key="item.key" :class="{ invalid: rowInvalid(item) }">
-                    <td><input v-model="item.work_date" type="date" /></td>
-                    <td><input v-model="item.description" type="text" placeholder="What was done" /></td>
-                    <td>
-                        <input
-                            v-model="item.hours"
-                            type="text"
-                            inputmode="numeric"
-                            placeholder="H:MM"
-                            :title="isValidHours(item.hours) ? '' : 'Expected H:MM, e.g. 1:30'"
-                        />
-                    </td>
-                    <td style="white-space: nowrap">
-                        <button
-                            class="row-move"
-                            type="button"
-                            title="Move up"
-                            :disabled="index === 0"
-                            @click="move(index, -1)"
-                        >&uarr;</button>
-                        <button
-                            class="row-move"
-                            type="button"
-                            title="Move down"
-                            :disabled="index === items.length - 1"
-                            @click="move(index, 1)"
-                        >&darr;</button>
-                        <button class="btn btn-sm btn-danger" type="button" title="Remove" @click="removeRow(index)">
-                            &times;
-                        </button>
-                    </td>
-                </tr>
-                <tr v-if="items.length === 0">
-                    <td colspan="4" class="muted" style="padding: 1rem; text-align: center">
-                        No line items yet.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <div>
+    <table class="line-item-editor">
+      <thead>
+        <tr>
+          <th class="col-date">
+            Date
+          </th>
+          <th>Description</th>
+          <th class="col-hours">
+            Hours
+          </th>
+          <th class="col-actions" />
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(item, index) in items"
+          :key="item.key"
+          :class="{ invalid: rowInvalid(item) }"
+        >
+          <td>
+            <input
+              v-model="item.work_date"
+              type="date"
+            >
+          </td>
+          <td>
+            <input
+              v-model="item.description"
+              type="text"
+              placeholder="What was done"
+            >
+          </td>
+          <td>
+            <input
+              v-model="item.hours"
+              type="text"
+              inputmode="numeric"
+              placeholder="H:MM"
+              :title="isValidHours(item.hours) ? '' : 'Expected H:MM, e.g. 1:30'"
+            >
+          </td>
+          <td style="white-space: nowrap">
+            <button
+              class="row-move"
+              type="button"
+              title="Move up"
+              :disabled="index === 0"
+              @click="move(index, -1)"
+            >
+              &uarr;
+            </button>
+            <button
+              class="row-move"
+              type="button"
+              title="Move down"
+              :disabled="index === items.length - 1"
+              @click="move(index, 1)"
+            >
+              &darr;
+            </button>
+            <button
+              class="btn btn-sm btn-danger"
+              type="button"
+              title="Remove"
+              @click="removeRow(index)"
+            >
+              &times;
+            </button>
+          </td>
+        </tr>
+        <tr v-if="items.length === 0">
+          <td
+            colspan="4"
+            class="muted"
+            style="padding: 1rem; text-align: center"
+          >
+            No line items yet.
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-        <div class="field-row" style="margin-top: .75rem; align-items: center">
-            <button class="btn btn-secondary" type="button" @click="addRow">Add line item</button>
-            <span class="muted">
-                {{ items.length }} item{{ items.length === 1 ? '' : 's' }} ·
-                {{ formatHM(totalMinutes) }} total
-            </span>
-            <span v-if="invalidCount" class="alert alert-error" style="margin: 0; padding: .2rem .5rem">
-                {{ invalidCount }} row{{ invalidCount === 1 ? '' : 's' }} need attention
-            </span>
-        </div>
+    <div
+      class="field-row"
+      style="margin-top: .75rem; align-items: center"
+    >
+      <button
+        class="btn btn-secondary"
+        type="button"
+        @click="addRow"
+      >
+        Add line item
+      </button>
+      <span class="muted">
+        {{ items.length }} item{{ items.length === 1 ? '' : 's' }} ·
+        {{ formatHM(totalMinutes) }} total
+      </span>
+      <span
+        v-if="invalidCount"
+        class="alert alert-error"
+        style="margin: 0; padding: .2rem .5rem"
+      >
+        {{ invalidCount }} row{{ invalidCount === 1 ? '' : 's' }} need attention
+      </span>
     </div>
+  </div>
 </template>

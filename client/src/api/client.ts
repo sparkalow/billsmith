@@ -38,7 +38,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
         );
     }
 
-    if (response.status === 204) return undefined as T;
+    if (response.status === 204) {return undefined as T;}
 
     const text = await response.text();
     const payload = text ? (JSON.parse(text) as unknown) : undefined;

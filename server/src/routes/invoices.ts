@@ -18,7 +18,7 @@ export const invoiceRoutes: FastifyPluginAsync = async (fastify) => {
 
     app.get('/invoices/:id', { schema: { params: idParam } }, async (request, reply) => {
         const invoice = getInvoice(db, request.params.id);
-        if (!invoice) return reply.code(404).send({ error: 'Invoice not found' });
+        if (!invoice) {return reply.code(404).send({ error: 'Invoice not found' });}
         return invoice;
     });
 
@@ -45,7 +45,7 @@ export const invoiceRoutes: FastifyPluginAsync = async (fastify) => {
                 return reply.code(409).send({ error: `Invoice number ${number} is already in use` });
             }
             const updated = updateInvoice(db, id, request.body);
-            if (!updated) return reply.code(404).send({ error: 'Invoice not found' });
+            if (!updated) {return reply.code(404).send({ error: 'Invoice not found' });}
             return updated;
         },
     );
@@ -64,7 +64,7 @@ export const invoiceRoutes: FastifyPluginAsync = async (fastify) => {
         { schema: { params: idParam, body: lineItemsBody } },
         async (request, reply) => {
             const { id } = request.params;
-            if (!getInvoice(db, id)) return reply.code(404).send({ error: 'Invoice not found' });
+            if (!getInvoice(db, id)) {return reply.code(404).send({ error: 'Invoice not found' });}
             replaceLineItems(db, id, request.body.line_items);
             return getInvoice(db, id);
         },

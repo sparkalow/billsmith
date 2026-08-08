@@ -15,7 +15,7 @@ export const customerRoutes: FastifyPluginAsync = async (fastify) => {
 
     app.get('/customers/:id', { schema: { params: idParam } }, async (request, reply) => {
         const customer = getCustomer(db, request.params.id);
-        if (!customer) return reply.code(404).send({ error: 'Customer not found' });
+        if (!customer) {return reply.code(404).send({ error: 'Customer not found' });}
         return customer;
     });
 
@@ -28,7 +28,7 @@ export const customerRoutes: FastifyPluginAsync = async (fastify) => {
         { schema: { params: idParam, body: updateCustomerBody } },
         async (request, reply) => {
             const updated = updateCustomer(db, request.params.id, request.body);
-            if (!updated) return reply.code(404).send({ error: 'Customer not found' });
+            if (!updated) {return reply.code(404).send({ error: 'Customer not found' });}
             return updated;
         },
     );

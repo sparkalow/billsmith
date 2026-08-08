@@ -26,7 +26,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
     /** Load once; views call this freely without refetching on every mount. */
     async function ensureLoaded(): Promise<void> {
-        if (!settings.value) await load();
+        if (!settings.value) {await load();}
     }
 
     async function save(patch: Partial<SettingsRow>): Promise<void> {
