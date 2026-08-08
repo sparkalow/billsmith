@@ -8,7 +8,7 @@ export function getSettings(db: Db): SettingsRow {
 
 const UPDATABLE = [
     'business_name', 'business_address_1', 'business_address_2',
-    'default_terms_html', 'default_rate_cents', 'default_net_days', 'wrike_contact_id',
+    'default_terms_html', 'default_rate_cents', 'default_net_days',
 ] as const;
 
 export function updateSettings(

@@ -11,17 +11,18 @@ export const DEFAULT_TERMS_HTML =
     '<small><strong>Invoice Disputes</strong>: Any disputes regarding the invoice ' +
     'must be raised within 7 days of receiving the invoice.</small>';
 
+/** Placeholders. Change these in Settings on first run — they print on every invoice. */
 export const DEFAULT_BUSINESS = {
-    name: 'Brian Matthews',
-    address_1: '1119 Tiger Woods Way',
-    address_2: 'Murfreesboro TN, 37129',
+    name: 'First Last',
+    address_1: '123 Main St',
+    address_2: 'City ST, 90210',
 };
 
-/** The only customer across all 19 legacy invoices. */
+/** A starter customer, so a fresh install has something to invoice. */
 export const DEFAULT_CUSTOMER = {
-    name: 'Industrial Strength Marketing',
-    address_1: '1401 5th Ave N.',
-    address_2: 'Nashville, TN 37208',
+    name: 'Customer Name',
+    address_1: '456 Second Ave',
+    address_2: 'City ST, 90210',
 };
 
 export const DEFAULT_RATE_CENTS = 8500;
@@ -31,8 +32,8 @@ export function seed(db: Db): void {
     db.prepare(
         `INSERT INTO settings (
             id, business_name, business_address_1, business_address_2,
-            default_terms_html, default_rate_cents, default_net_days, wrike_contact_id
-         ) VALUES (1, ?, ?, ?, ?, ?, 30, ?)
+            default_terms_html, default_rate_cents, default_net_days
+         ) VALUES (1, ?, ?, ?, ?, ?, 30)
          ON CONFLICT(id) DO NOTHING`,
     ).run(
         DEFAULT_BUSINESS.name,
@@ -40,7 +41,6 @@ export function seed(db: Db): void {
         DEFAULT_BUSINESS.address_2,
         DEFAULT_TERMS_HTML,
         DEFAULT_RATE_CENTS,
-        process.env.WRIKE_CONTACT_ID ?? 'KUAUBLN4',
     );
 
     const existing = db

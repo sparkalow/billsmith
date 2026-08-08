@@ -26,14 +26,6 @@ export function formatHM(minutes: number): string {
 }
 
 /**
- * Convert Wrike's decimal hours to whole minutes.
- * Matches the legacy `formatHours` rounding at get-wrike-time.js:17.
- */
-export function decimalHoursToMinutes(hours: number): number {
-    return Math.round(hours * 60);
-}
-
-/**
  * Billable amount in cents.
  *
  * Mirrors the SQL in the `invoice_totals` view exactly, so client-side previews and

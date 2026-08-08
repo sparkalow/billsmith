@@ -26,7 +26,6 @@ import { seed } from './db/seed.js';
 import { invoiceRoutes } from './routes/invoices.js';
 import { customerRoutes } from './routes/customers.js';
 import { settingsRoutes } from './routes/settings.js';
-import { wrikeRoutes } from './routes/wrike.js';
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -135,7 +134,6 @@ export async function buildApp(options: BuildOptions = {}): Promise<FastifyInsta
             await api.register(invoiceRoutes);
             await api.register(customerRoutes);
             await api.register(settingsRoutes);
-            await api.register(wrikeRoutes);
         },
         { prefix: '/api' },
     );

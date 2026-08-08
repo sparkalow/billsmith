@@ -29,14 +29,13 @@ to the API and everything else falls through to the client router.
 
 ## Configuration
 
-Copy `server/.env.example` to `server/.env`:
+Everything is optional — the app runs with no `.env` at all. To override a default,
+copy `server/.env.example` to `server/.env`:
 
-| Variable           | Purpose                                                         |
-|--------------------|-----------------------------------------------------------------|
-| `WRIKE_TOKEN`      | Wrike permanent access token. Required for the import screen.   |
-| `WRIKE_CONTACT_ID` | Wrike contact whose timelogs are billed. Also in Settings.      |
-| `DB_PATH`          | Override the database location. Defaults to `data/invoices.db`. |
-| `PORT` / `HOST`    | API server binding. Defaults to `127.0.0.1:3000`.               |
+| Variable        | Purpose                                                         |
+|-----------------|-----------------------------------------------------------------|
+| `DB_PATH`       | Override the database location. Defaults to `data/invoices.db`. |
+| `PORT` / `HOST` | API server binding. Defaults to `127.0.0.1:3000`.               |
     
 ## The database
 
@@ -85,7 +84,7 @@ server/     Fastify API; db/index.ts is the only file that touches the SQLite dr
             app.ts also hosts Vite in dev and serves client/dist in production
 client/     Vue 3 SPA; InvoiceDocument.vue is shared by the print view and the editor
             vite.config.ts has no `server` block — Vite never runs standalone
-scripts/    migrate, one-time markdown import, import verification
+scripts/    migrate
 ```
 
 `server`'s dev script scopes `tsx watch` away from `client/` and `.vite-temp/`. Vite

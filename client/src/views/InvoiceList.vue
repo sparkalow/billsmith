@@ -14,10 +14,7 @@ onMounted(() => store.load());
     <div class="page">
         <div class="page-header">
             <h1>Invoices</h1>
-            <div style="display: flex; gap: .5rem">
-                <RouterLink class="btn btn-secondary" to="/import">Import from Wrike</RouterLink>
-                <RouterLink class="btn" to="/invoices/new">New invoice</RouterLink>
-            </div>
+            <RouterLink class="btn" to="/invoices/new">New invoice</RouterLink>
         </div>
 
         <div v-if="store.error" class="alert alert-error">{{ store.error }}</div>

@@ -11,7 +11,6 @@ import type {
     LineItemInput,
     CustomerRow,
     SettingsRow,
-    WrikeTimelogPreview,
 } from '@shared/types.js';
 
 export class ApiError extends Error {
@@ -91,42 +90,3 @@ export const getSettings = () => request<SettingsRow>('/settings');
 
 export const updateSettings = (patch: Partial<SettingsRow>) =>
     request<SettingsRow>('/settings', { method: 'PUT', body: JSON.stringify(patch) });
-
-// Wrike ---------------------------------------------------------------
-
-export interface RangeOverlap {
-    id: number;
-    invoice_number: string;
-    issue_date: string;
-    item_count: number;
-}
-
-export interface TimelogResponse {
-    timelogs: WrikeTimelogPreview[];
-    fetched: number;
-    warning?: string;
-    /** Existing invoices already covering work dates in this range. */
-    overlaps: RangeOverlap[];
-}
-
-/** Hit the Wrike API and cache the result. */
-export const fetchWrikeTimelogs = (start: string, end: string) =>
-    request<TimelogResponse>('/wrike/timelogs', {
-        method: 'POST',
-        body: JSON.stringify({ start, end }),
-    });
-
-/** Read cached timelogs without calling Wrike. */
-export const cachedWrikeTimelogs = (start: string, end: string) =>
-    request<TimelogResponse>(
-        `/wrike/timelogs?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`,
-    );
-
-export const createInvoiceFromWrike = (input: {
-    start: string;
-    end: string;
-    customer_id: number;
-    invoice_number?: string;
-    issue_date?: string;
-    skip_imported?: boolean;
-}) => request<InvoiceDetail>('/invoices/from-wrike', { method: 'POST', body: JSON.stringify(input) });

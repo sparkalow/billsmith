@@ -17,9 +17,6 @@ export interface EditableLineItem {
     /** Raw `H:MM` text as typed. */
     hours: string;
     source?: string;
-    wrike_timelog_id?: string | null;
-    wrike_task_id?: string | null;
-    wrike_hours_raw?: number | null;
 }
 
 const items = defineModel<EditableLineItem[]>({ required: true });

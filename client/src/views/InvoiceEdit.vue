@@ -122,9 +122,6 @@ const previewInvoice = computed<InvoiceDetail | null>(() => {
                 }
             })(),
             source: 'manual' as const,
-            wrike_timelog_id: item.wrike_timelog_id ?? null,
-            wrike_task_id: item.wrike_task_id ?? null,
-            wrike_hours_raw: item.wrike_hours_raw ?? null,
         })),
     };
 });
@@ -152,9 +149,6 @@ function toEditable(detail: InvoiceDetail): EditableLineItem[] {
         description: item.description,
         hours: `${Math.floor(item.minutes / 60)}:${String(item.minutes % 60).padStart(2, '0')}`,
         source: item.source,
-        wrike_timelog_id: item.wrike_timelog_id,
-        wrike_task_id: item.wrike_task_id,
-        wrike_hours_raw: item.wrike_hours_raw,
     }));
 }
 
@@ -207,9 +201,6 @@ function toLineItemInputs(): LineItemInput[] {
         description: item.description.trim(),
         minutes: parseHM(item.hours),
         source: (item.source as LineItemInput['source']) ?? 'manual',
-        wrike_timelog_id: item.wrike_timelog_id ?? null,
-        wrike_task_id: item.wrike_task_id ?? null,
-        wrike_hours_raw: item.wrike_hours_raw ?? null,
     }));
 }
 

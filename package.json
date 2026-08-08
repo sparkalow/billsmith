@@ -15,13 +15,9 @@
     "build": "npm run build --workspace client",
     "start": "npm run start --workspace server",
     "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace client",
-    "db:migrate": "tsx scripts/migrate.ts",
-    "db:import": "tsx scripts/import-markdown.ts",
-    "db:verify": "tsx scripts/verify-import.ts"
+    "db:migrate": "tsx scripts/migrate.ts"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
-    "js-yaml": "^4.1.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },

@@ -11,7 +11,7 @@ export const isoDate = z
     .refine((v) => !Number.isNaN(Date.parse(`${v}T00:00:00Z`)), 'Not a real date');
 
 export const invoiceStatus = z.enum(['draft', 'sent', 'paid', 'void']);
-export const lineItemSource = z.enum(['manual', 'wrike', 'import']);
+export const lineItemSource = z.enum(['manual', 'import']);
 
 export const cents = z.number().int().min(0);
 export const minutes = z.number().int().min(0);
@@ -25,9 +25,6 @@ export const lineItemInput = z.object({
     description: z.string().trim().min(1, 'Description is required'),
     minutes,
     source: lineItemSource.optional(),
-    wrike_timelog_id: z.string().nullish(),
-    wrike_task_id: z.string().nullish(),
-    wrike_hours_raw: z.number().nullish(),
 });
 
 export const createInvoiceBody = z.object({
@@ -83,21 +80,4 @@ export const settingsBody = z.object({
     default_terms_html: z.string().optional(),
     default_rate_cents: cents.optional(),
     default_net_days: z.number().int().min(0).optional(),
-    wrike_contact_id: z.string().nullish(),
 });
-
-export const wrikeRangeBody = z
-    .object({ start: isoDate, end: isoDate })
-    .refine((v) => v.start <= v.end, { message: 'start must not be after end' });
-
-export const fromWrikeBody = z
-    .object({
-        start: isoDate,
-        end: isoDate,
-        customer_id: z.number().int().positive(),
-        invoice_number: z.string().trim().min(1).optional(),
-        issue_date: isoDate.optional(),
-        due_date: isoDate.optional(),
-        skip_imported: z.boolean().optional(),
-    })
-    .refine((v) => v.start <= v.end, { message: 'start must not be after end' });

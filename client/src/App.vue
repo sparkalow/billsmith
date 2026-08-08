@@ -21,7 +21,6 @@ import ThemeToggle from '@/components/ThemeToggle.vue';
       </RouterLink>
       </span>
         <RouterLink to="/">All invoices</RouterLink>
-        <RouterLink to="/import">Wrike import</RouterLink>
         <RouterLink to="/settings">Settings</RouterLink>
         <ThemeToggle />
     </nav>

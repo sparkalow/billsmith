@@ -15,7 +15,6 @@ CREATE TABLE settings (
     default_terms_html  TEXT    NOT NULL,
     default_rate_cents  INTEGER NOT NULL DEFAULT 8500,
     default_net_days    INTEGER NOT NULL DEFAULT 30,
-    wrike_contact_id    TEXT,
     updated_at          TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -70,32 +69,13 @@ CREATE TABLE line_items (
     description TEXT    NOT NULL,
     minutes     INTEGER NOT NULL CHECK (minutes >= 0),
 
-    source           TEXT NOT NULL DEFAULT 'manual'
-                         CHECK (source IN ('manual', 'wrike', 'import')),
-    wrike_timelog_id TEXT UNIQUE,
-    wrike_task_id    TEXT,
-    wrike_hours_raw  REAL,   -- pre-rounding decimal, e.g. 1.0833333333333333
+    source      TEXT    NOT NULL DEFAULT 'manual'
+                    CHECK (source IN ('manual', 'import')),
 
     UNIQUE (invoice_id, position)
 );
 
 CREATE INDEX idx_line_items_invoice ON line_items (invoice_id, position);
-
--- Raw Wrike pulls, so an import can be re-run or reconciled without re-fetching.
-CREATE TABLE wrike_timelogs (
-    id           TEXT PRIMARY KEY,   -- Wrike's own timelog id
-    task_id      TEXT,
-    user_id      TEXT,
-    tracked_date TEXT NOT NULL,
-    hours        REAL NOT NULL,
-    comment      TEXT NOT NULL DEFAULT '',
-    created_date TEXT,
-    updated_date TEXT,
-    fetched_at   TEXT NOT NULL DEFAULT (datetime('now')),
-    consumed_by_line_item_id INTEGER REFERENCES line_items(id) ON DELETE SET NULL
-);
-
-CREATE INDEX idx_wrike_tracked_date ON wrike_timelogs (tracked_date);
 
 -- Totals stay derived, never stored — but computed once in SQL rather than
 -- recomputed per render as the legacy getTotals filter did.

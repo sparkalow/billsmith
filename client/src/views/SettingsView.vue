@@ -19,7 +19,6 @@ const form = ref({
     default_terms_html: '',
     default_rate: '85.00',
     default_net_days: 30,
-    wrike_contact_id: '',
 });
 
 const saving = ref(false);
@@ -39,7 +38,6 @@ onMounted(async () => {
             default_terms_html: s.default_terms_html,
             default_rate: (s.default_rate_cents / 100).toFixed(2),
             default_net_days: s.default_net_days,
-            wrike_contact_id: s.wrike_contact_id ?? '',
         };
     }
 });
@@ -56,7 +54,6 @@ async function save(): Promise<void> {
             default_terms_html: form.value.default_terms_html,
             default_rate_cents: parseUSD(form.value.default_rate),
             default_net_days: Number(form.value.default_net_days),
-            wrike_contact_id: form.value.wrike_contact_id || null,
         });
         saved.value = true;
     } catch (err) {
@@ -114,10 +111,6 @@ async function addCustomer(): Promise<void> {
                 <div class="field">
                     <label for="net">Payment terms (days)</label>
                     <input id="net" v-model.number="form.default_net_days" type="number" min="0" />
-                </div>
-                <div class="field">
-                    <label for="wrike">Wrike contact id</label>
-                    <input id="wrike" v-model="form.wrike_contact_id" type="text" />
                 </div>
             </div>
             <div class="field">

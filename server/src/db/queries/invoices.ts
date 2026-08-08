@@ -108,9 +108,8 @@ export function replaceLineItems(db: Db, invoiceId: number, items: LineItemInput
     run(db, 'DELETE FROM line_items WHERE invoice_id = ?', invoiceId);
     const insert = db.prepare(
         `INSERT INTO line_items (
-            invoice_id, position, work_date, description, minutes,
-            source, wrike_timelog_id, wrike_task_id, wrike_hours_raw
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            invoice_id, position, work_date, description, minutes, source
+         ) VALUES (?, ?, ?, ?, ?, ?)`,
     );
     items.forEach((item, index) => {
         insert.run(
@@ -120,9 +119,6 @@ export function replaceLineItems(db: Db, invoiceId: number, items: LineItemInput
             item.description,
             item.minutes,
             item.source ?? 'manual',
-            item.wrike_timelog_id ?? null,
-            item.wrike_task_id ?? null,
-            item.wrike_hours_raw ?? null,
         );
     });
 }
@@ -214,8 +210,8 @@ export function deleteInvoice(db: Db, id: number): boolean {
 }
 
 /**
- * Next invoice number for a given issue date, matching the legacy convention from
- * get-wrike-time.js: month + last-day-of-month + year, e.g. 2026-08-01 -> "8312026".
+ * Next invoice number for a given issue date, following the convention the legacy
+ * invoices used: month + last-day-of-month + year, e.g. 2026-08-01 -> "8312026".
  */
 export function suggestInvoiceNumber(issueDate: string): string {
     const parts = issueDate.split('-').map(Number);

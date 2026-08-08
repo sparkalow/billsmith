@@ -6,7 +6,7 @@
  */
 
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'void';
-export type LineItemSource = 'manual' | 'wrike' | 'import';
+export type LineItemSource = 'manual' | 'import';
 
 export interface SettingsRow {
     id: 1;
@@ -16,7 +16,6 @@ export interface SettingsRow {
     default_terms_html: string;
     default_rate_cents: number;
     default_net_days: number;
-    wrike_contact_id: string | null;
     updated_at: string;
 }
 
@@ -60,22 +59,6 @@ export interface LineItemRow {
     description: string;
     minutes: number;
     source: LineItemSource;
-    wrike_timelog_id: string | null;
-    wrike_task_id: string | null;
-    wrike_hours_raw: number | null;
-}
-
-export interface WrikeTimelogRow {
-    id: string;
-    task_id: string | null;
-    user_id: string | null;
-    tracked_date: string;
-    hours: number;
-    comment: string;
-    created_date: string | null;
-    updated_date: string | null;
-    fetched_at: string;
-    consumed_by_line_item_id: number | null;
 }
 
 /** Output of the `invoice_totals` view. All money in cents, time in whole minutes. */
@@ -115,9 +98,6 @@ export interface LineItemInput {
     description: string;
     minutes: number;
     source?: LineItemSource;
-    wrike_timelog_id?: string | null;
-    wrike_task_id?: string | null;
-    wrike_hours_raw?: number | null;
 }
 
 export interface CreateInvoiceInput {
@@ -153,15 +133,3 @@ export type UpdateInvoiceInput = Partial<
         | 'notes'
     >
 >;
-
-/** A Wrike timelog as offered to the import UI, already converted to minutes. */
-export interface WrikeTimelogPreview {
-    id: string;
-    task_id: string | null;
-    tracked_date: string;
-    hours_raw: number;
-    minutes: number;
-    comment: string;
-    /** True when this timelog is already attached to a line item on some invoice. */
-    already_imported: boolean;
-}

@@ -123,7 +123,7 @@ let savepointCounter = 0;
  * Run `fn` inside a transaction, rolling back if it throws.
  *
  * Re-entrant: SQLite rejects a nested BEGIN, but composing transactional operations
- * is normal (createInvoiceFromWrike calls createInvoice, and both want atomicity).
+ * is normal (a caller wrapping several createInvoice calls wants one atomic unit).
  * When already inside a transaction this uses a SAVEPOINT, so an inner failure
  * unwinds only the inner work and the outer transaction decides the final outcome.
  */

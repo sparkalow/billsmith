@@ -2,8 +2,47 @@
 
 ## Current work
 
+**Open-source release prep — Wrike integration removed. Done, fully verified.**
+Plan: `_planning/plans/2026-08-05-remove-wrike-integration.md` (local only — `_planning/`
+is gitignored)
+
+The Wrike client, routes, queries, import screen, `/import` route, settings field, env
+vars and schema (`wrike_timelogs`, `line_items.wrike_*`, `settings.wrike_contact_id`) are
+gone. `LineItemSource` is now `'manual' | 'import'`. `001_init.sql` was rewritten rather
+than superseded, and a one-off `strip-wrike.ts` brought `data/invoices.db` into line
+before being deleted — 20 invoices / 279 line items / totals identical before and after,
+backup at `data/backups/pre-strip-wrike.db`. Typecheck, build, a fresh migrate and the
+browser pass all pass.
+
+Publication is planned from a **fresh repository**, so the current git history is
+disposable and the old Wrike token needs no rotation.
+
+**Seed defaults neutralised (2026-08-06).** `DEFAULT_BUSINESS` and `DEFAULT_CUSTOMER` in
+`server/src/db/seed.ts` are now placeholders (`First Last`, `123 Main St`,
+`City ST, 90210`). `DEFAULT_TERMS_HTML` and the 8500¢ rate are generic and stayed as-is.
+Seeding is `ON CONFLICT DO NOTHING`, so existing databases keep their real values.
+
+**Markdown import scripts removed (2026-08-06).** `scripts/import-markdown.ts` and
+`scripts/verify-import.ts` are gone, along with their `db:import` / `db:verify` npm
+scripts and the `js-yaml` + `@types/js-yaml` devDependencies (nothing else used them).
+`scripts/` is now just `migrate.ts`.
+
+Their removal orphaned two exports in `shared/dates.ts`, both deleted: `normalizeDate`
+(with its five-legacy-format disambiguation block, `isRealDate`, and the `YEAR_FIRST` /
+`MONTH_FIRST` patterns) and `monthBounds`, which had already gone unused when the Wrike
+range picker went. The remaining formatters are all live.
+
+`LineItemSource` keeps `'import'` — 277 existing line items carry it, and the value is a
+truthful provenance record even with the importer gone.
+
+**`_planning/` untracked (2026-08-06).** Plans stay on disk and the CLAUDE.md convention
+still applies — they just no longer ship. `.gitignore` covers the whole directory.
+
+No known release-prep items remain open.
+
 **Light/dark theme — code complete, awaiting a browser pass.**
-Plan: [`_planning/plans/2026-08-02-light-dark-theme.md`](_planning/plans/2026-08-02-light-dark-theme.md)
+Plan: `_planning/plans/2026-08-02-light-dark-theme.md` (local only — `_planning/` is
+gitignored)
 
 Typecheck, build, and a full WCAG contrast sweep all pass. What has *not* happened is looking at it in a real browser — the Chrome extension was not connected during the session. Run `npm run dev` and check:
 
