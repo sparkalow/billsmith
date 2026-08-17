@@ -6,7 +6,6 @@ import type { InvoiceSummary, InvoiceDetail } from '@shared/types.js';
 
 export const useInvoiceStore = defineStore('invoices', () => {
     const invoices = ref<InvoiceSummary[]>([]);
-    const cumulativeCents = ref(0);
     const loading = ref(false);
     const error = ref<string | null>(null);
 
@@ -15,19 +14,11 @@ export const useInvoiceStore = defineStore('invoices', () => {
         [...invoices.value].sort((a, b) => b.issue_date.localeCompare(a.issue_date)),
     );
 
-    const unpaidCents = computed(() =>
-        invoices.value
-            .filter((i) => i.status === 'sent')
-            .reduce((sum, i) => sum + i.totals.total_cents, 0),
-    );
-
     async function load(): Promise<void> {
         loading.value = true;
         error.value = null;
         try {
-            const response = await api.listInvoices();
-            invoices.value = response.invoices;
-            cumulativeCents.value = response.cumulative_cents;
+            invoices.value = (await api.listInvoices()).invoices;
         } catch (err) {
             error.value = (err as Error).message;
         } finally {
@@ -35,7 +26,7 @@ export const useInvoiceStore = defineStore('invoices', () => {
         }
     }
 
-    /** Reload after any mutation so the list and its cumulative total stay honest. */
+    /** Reload after any mutation so the list stays honest. */
     async function refreshAfter<T>(action: () => Promise<T>): Promise<T> {
         const result = await action();
         await load();
@@ -58,8 +49,8 @@ export const useInvoiceStore = defineStore('invoices', () => {
     }
 
     return {
-        invoices, cumulativeCents, loading, error,
-        sorted, unpaidCents,
+        invoices, loading, error,
+        sorted,
         load, create, update, remove, saveLineItems, fetchOne,
     };
 });

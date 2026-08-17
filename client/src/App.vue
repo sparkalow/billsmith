@@ -50,6 +50,9 @@ import ThemeToggle from '@/components/ThemeToggle.vue';
     <RouterLink to="/">
       All invoices
     </RouterLink>
+    <RouterLink to="/reports">
+      Reports
+    </RouterLink>
     <RouterLink to="/settings">
       Settings
     </RouterLink>

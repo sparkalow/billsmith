@@ -11,6 +11,7 @@ import type {
     LineItemInput,
     CustomerRow,
     SettingsRow,
+    ReportsResponse,
 } from '@shared/types.js';
 
 export class ApiError extends Error {
@@ -90,3 +91,7 @@ export const getSettings = () => request<SettingsRow>('/settings');
 
 export const updateSettings = (patch: Partial<SettingsRow>) =>
     request<SettingsRow>('/settings', { method: 'PUT', body: JSON.stringify(patch) });
+
+// Reports ------------------------------------------------------------
+
+export const getReports = () => request<ReportsResponse>('/reports');

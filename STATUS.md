@@ -2,6 +2,45 @@
 
 ## Current work
 
+**Reports route added (2026-08-11) — code complete, numbers verified, awaiting a browser pass.**
+Plan: `_planning/plans/2026-08-11-reports-route.md`
+
+`/reports` with three tabbed sub-routes — `/reports/yearly`, `/reports/outstanding`,
+`/reports/customers` — served from a single `GET /api/reports`. Aggregates are SQL over the
+`invoice_totals` view in `server/src/db/queries/reports.ts`, never recomputed in JS.
+
+The status vocabulary is uniform across all three reports and is the thing to preserve if
+these queries are ever edited:
+
+| Term | Definition |
+|---|---|
+| Billed | `status IN ('sent','paid')` |
+| Collected | `status = 'paid'` |
+| Outstanding | `status = 'sent'` |
+| Draft | `status = 'draft'` — never inside Billed |
+| Void | excluded everywhere |
+
+Two derived facts worth remembering: there is **no `overdue` status** in the schema, so age
+comes from `due_date` against `date('now')` (UTC, matching the `paid_date` auto-fill); and the
+customer report groups on `customer_id`, not the invoice's snapshotted `customer_name`, so a
+rename does not split a customer into two rows.
+
+The old "Cumulative total" footer is gone, along with `cumulativeCents()`, the
+`cumulative_cents` field on `GET /api/invoices`, and the store's `cumulativeCents` /
+`unpaidCents`. Nothing was lost: the old lifetime figure equals Billed + Draft on the yearly
+report — it had been folding drafts in silently, which is now split out.
+
+Verified against `data/invoices.db`: per-status sums (draft 9917¢, paid 1234627¢, sent
+146767¢) reconcile exactly with every report column, and the aging buckets match the three
+open invoices. Typecheck, build and eslint all pass.
+
+Not done — the Chrome extension was not connected, so this needs the same browser pass as the
+theme work below:
+
+- [ ] Nav shows Reports; `/reports` redirects to `/reports/yearly`; all three tabs render.
+- [ ] Switching tabs does **not** refire the fetch (`ensureLoaded` guard) — check the Network panel.
+- [ ] Light, dark and system themes; the `.report-tabs` strip is `no-print`.
+
 **Open-source release prep — Wrike integration removed. Done, fully verified.**
 Plan: `_planning/plans/2026-08-05-remove-wrike-integration.md` (local only — `_planning/`
 is gitignored)

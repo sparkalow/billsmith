@@ -76,17 +76,6 @@ onMounted(() => store.load());
           {{ formatUSD(invoice.totals.total_cents) }}
         </div>
       </RouterLink>
-
-      <div class="lifetime-total">
-        Cumulative total — {{ formatUSD(store.cumulativeCents) }}
-        <span
-          v-if="store.unpaidCents"
-          class="muted"
-          style="color: inherit; opacity: .75"
-        >
-          · {{ formatUSD(store.unpaidCents) }} outstanding
-        </span>
-      </div>
     </template>
 
     <div

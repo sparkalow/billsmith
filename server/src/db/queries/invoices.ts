@@ -57,17 +57,6 @@ export function listInvoices(db: Db): InvoiceSummary[] {
     ).map(splitTotals);
 }
 
-/** Sum of every non-void invoice. Replaces the running total in the legacy index.njk. */
-export function cumulativeCents(db: Db): number {
-    return get<{ c: number }>(
-        db,
-        `SELECT COALESCE(SUM(t.total_cents), 0) AS c
-         FROM invoice_totals t
-         JOIN invoices i ON i.id = t.invoice_id
-         WHERE i.status <> 'void'`,
-    )!.c;
-}
-
 export function getInvoice(db: Db, id: number): InvoiceDetail | null {
     const row = get<JoinedRow>(
         db,

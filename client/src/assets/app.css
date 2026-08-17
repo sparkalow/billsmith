@@ -308,14 +308,145 @@ input:focus, select:focus, textarea:focus {
     color: var(--ui-status-void-fg);
 }
 
-.lifetime-total {
-    text-align: center;
-    background-color: var(--ui-surface-nav);
+/* An invoice past its due date. The four badge variants above mirror the status
+   column in the schema; overdue is derived, not stored, so it lives on its own. */
+.badge.overdue {
+    background: var(--ui-danger);
     color: var(--ui-text-on-nav);
-    padding: .6rem;
-    margin-top: 2rem;
-    letter-spacing: .05rem;
+}
+
+/* Reports ---------------------------------------------------------- */
+
+.report-tabs {
+    display: flex;
+    gap: .25rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--ui-border);
+    margin-bottom: 1rem;
+}
+
+.report-tabs a {
+    padding: .4rem .75rem;
+    text-decoration: none;
+    color: var(--ui-text-muted);
+    font-size: var(--font-size-sm);
+    /* Transparent rather than absent, so the tab does not shift by 2px when it
+       becomes active. */
+    border-bottom: 2px solid transparent;
+}
+
+.report-tabs a:hover {
+    color: var(--ui-text-primary);
+}
+
+.report-tabs a.router-link-active {
+    color: var(--ui-text-primary);
+    border-bottom-color: var(--ui-accent);
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.report-table th {
+    text-align: left;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ui-text-muted);
+    font-weight: 400;
+    padding: .35rem .5rem;
+    border-bottom: 1px solid var(--ui-border);
+}
+
+.report-table td {
+    padding: .45rem .5rem;
+    border-bottom: 1px solid var(--ui-border);
+}
+
+.report-table tbody tr:hover {
+    background: var(--ui-surface-hover);
+}
+
+.report-table th.amount, .report-table td.amount,
+.report-table th.hours, .report-table td.hours,
+.report-table th.num, .report-table td.num {
+    text-align: right;
+}
+
+/* The leading label column stays left-aligned even though it carries .num for the
+   tabular figures — a year or invoice number reads as a heading, not a quantity. */
+.report-table td:first-child, .report-table th:first-child {
+    text-align: left;
+}
+
+.report-table td.amount {
+    font-weight: 700;
+}
+
+.report-table tfoot td {
+    border-top: 2px solid var(--ui-border);
+    border-bottom: none;
+    font-weight: 700;
+    padding-top: .6rem;
+}
+
+.report-table a {
+    color: inherit;
+}
+
+.report-headline {
+    font-size: var(--font-size-lg);
+    margin-bottom: 1rem;
+}
+
+.report-headline .amount {
+    font-family: var(--numeric-font-family);
+    font-variant-numeric: tabular-nums;
+}
+
+.report-note {
+    margin-top: 1rem;
+    font-size: var(--font-size-xs);
+    max-width: 40rem;
+}
+
+.aging-buckets {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.aging-bucket {
+    flex: 1 1 8rem;
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    background: var(--ui-surface-raised);
     border-radius: .3rem;
+    padding: .5rem .75rem;
+}
+
+.aging-bucket .amount {
+    font-family: var(--numeric-font-family);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.aging-bucket-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ui-text-muted);
+}
+
+/* A zero bucket is kept in place so the five columns stay comparable across
+   reloads, but recedes. */
+.aging-bucket.is-empty {
+    opacity: .55;
 }
 
 /* Editable line-item table ----------------------------------------- */

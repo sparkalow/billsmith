@@ -3,7 +3,7 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 
 import {
     listInvoices, getInvoice, createInvoice, updateInvoice, deleteInvoice,
-    replaceLineItems, cumulativeCents, invoiceNumberExists, suggestInvoiceNumber,
+    replaceLineItems, invoiceNumberExists, suggestInvoiceNumber,
 } from '../db/queries/invoices.js';
 import { createInvoiceBody, updateInvoiceBody, lineItemsBody, idParam } from './schemas.js';
 
@@ -11,10 +11,7 @@ export const invoiceRoutes: FastifyPluginAsync = async (fastify) => {
     const app = fastify.withTypeProvider<ZodTypeProvider>();
     const db = fastify.db;
 
-    app.get('/invoices', async () => ({
-        invoices: listInvoices(db),
-        cumulative_cents: cumulativeCents(db),
-    }));
+    app.get('/invoices', async () => ({ invoices: listInvoices(db) }));
 
     app.get('/invoices/:id', { schema: { params: idParam } }, async (request, reply) => {
         const invoice = getInvoice(db, request.params.id);
