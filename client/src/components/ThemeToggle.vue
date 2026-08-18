@@ -1,6 +1,9 @@
 <script setup lang="ts">
 /**
- * Three-state theme control: System -> Light -> Dark -> System.
+ * Two-state theme control: Light <-> Dark.
+ *
+ * The OS preference only supplies the initial value (see useTheme.ts); it is
+ * not something the user can select.
  *
  * Lives inside .app-chrome, so it never reaches print output.
  */
@@ -21,25 +24,9 @@ const hint = computed(() => `Theme: ${label.value}. Switch to ${THEME_LABELS[nex
     :aria-label="hint"
     @click="cycle"
   >
-    <!-- Half-filled circle for "system", sun for light, moon for dark. -->
+    <!-- Sun for light, moon for dark. -->
     <svg
-      v-if="theme === 'system'"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="9"
-      />
-      <path
-        d="M12 3a9 9 0 0 0 0 18z"
-        fill="currentColor"
-        stroke="none"
-      />
-    </svg>
-    <svg
-      v-else-if="theme === 'light'"
+      v-if="theme === 'light'"
       viewBox="0 0 24 24"
       aria-hidden="true"
     >

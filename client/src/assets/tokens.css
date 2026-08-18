@@ -191,8 +191,10 @@
 /* ------------------------------------------------------------------ */
 
 /*
- * No data-theme attribute means "follow the OS". useTheme.ts removes the
- * attribute rather than setting it to "system", so this rule applies.
+ * useTheme.ts always sets data-theme to a concrete "light" or "dark" — the OS
+ * preference is resolved into one of the two rather than left implicit. This
+ * bare rule is the fallback for the moment before that happens, and for a
+ * no-JS render.
  */
 :root {
     color-scheme: light dark;

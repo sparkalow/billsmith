@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Billsmith : DIY invoices</title>
     <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
-    <!-- Applies the stored theme before first paint. Without this the page
+    <!-- Applies the stored theme before first paint, falling back to the OS
+         preference when the user has not pinned one. Without this the page
          renders light for a frame before Vue mounts. Keep in sync with
          src/composables/useTheme.ts. -->
     <script>
+        let t = null;
         try {
-            const t = localStorage.getItem('billsmith:theme');
-            if (t === 'light' || t === 'dark') {
-                document.documentElement.dataset.theme = t;
-            }
+            t = localStorage.getItem('billsmith:theme');
         } catch {}
+        if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
     </script>
 </head>
 <body>

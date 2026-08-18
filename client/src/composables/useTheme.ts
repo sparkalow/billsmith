@@ -8,43 +8,43 @@ import { computed, ref, watch } from 'vue';
  * module-level ref rather than a Pinia store: the stores in this app are all
  * API-backed, and this is not.
  *
- * 'system' is represented by the *absence* of the data-theme attribute, which
- * lets :root's default `color-scheme: light dark` apply. See tokens.css.
+ * Light and dark are the only two states a user can pick. The OS preference is
+ * only a *default*: until someone actually toggles, nothing is written to
+ * storage, so the app keeps following the OS on every later visit.
  */
-export type Theme = 'system' | 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'billsmith:theme';
 
 /** The cycle order, as a successor map so there is no unchecked index access. */
 const NEXT: Record<Theme, Theme> = {
-    system: 'light',
     light: 'dark',
-    dark: 'system',
+    dark: 'light',
 };
 
 export const THEME_LABELS: Record<Theme, string> = {
-    system: 'System',
     light: 'Light',
     dark: 'Dark',
 };
 
+/** The OS preference, used when the user has not pinned a theme themselves. */
+function systemTheme(): Theme {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 function read(): Theme {
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored === 'light' || stored === 'dark' || stored === 'system') {return stored;}
+        // Anything else — absent, or the legacy 'system' value — means unpinned.
+        if (stored === 'light' || stored === 'dark') {return stored;}
     } catch {
         /* Private browsing or a blocked storage partition. Fall through. */
     }
-    return 'system';
+    return systemTheme();
 }
 
 function apply(value: Theme): void {
-    const root = document.documentElement;
-    if (value === 'system') {
-        delete root.dataset.theme;
-    } else {
-        root.dataset.theme = value;
-    }
+    document.documentElement.dataset.theme = value;
 
     try {
         localStorage.setItem(STORAGE_KEY, value);
@@ -55,8 +55,9 @@ function apply(value: Theme): void {
 
 const theme = ref<Theme>(read());
 
-// The inline script in index.html has already applied the stored theme before
-// first paint; this keeps the attribute in sync with every later change.
+// The inline script in index.html has already applied the resolved theme before
+// first paint; this keeps the attribute in sync with every later change. It only
+// fires on a real change, which is what keeps an untouched preference unwritten.
 watch(theme, apply);
 
 export function useTheme() {

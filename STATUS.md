@@ -104,4 +104,4 @@ Two things to recheck after any palette change:
 1. `--ui-accent-text` is currently the *dark* anchor, because the accent is a bright magenta. A dark accent would need it flipped to lightest.
 2. The nav is dark in both themes, which is what lets the wordmark inherit `--ui-text-on-nav`. A light nav would need that pairing revisited.
 
-Theme preference is per-device in `localStorage['billsmith:theme']`; `'system'` is represented by the *absence* of the `data-theme` attribute on `<html>`.
+Theme preference is per-device in `localStorage['billsmith:theme']`, and is always `'light'` or `'dark'` — there is no user-selectable "system" state. Nothing is written to storage until the user toggles, so an untouched install keeps following `prefers-color-scheme`; either way `<html>` always carries a concrete `data-theme`.
