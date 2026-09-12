@@ -87,6 +87,10 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 .brand img,
 .brand svg { max-width: 8rem; }
 
+.invoice-number{
+    margin-top: .3rem;
+}
+
 .customer-container {
     display: flex;
     gap: 1rem;
