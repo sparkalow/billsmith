@@ -87,6 +87,10 @@ const previewInvoice = computed<InvoiceDetail | null>(() => {
   if (!settings) {return null;}
 
   const base = invoice.value;
+  // A draft re-syncs its snapshot from the customer and settings records on every
+  // save, so the preview has to read them live or it would show the stale copy the
+  // server is about to overwrite. Issued invoices keep whatever they were saved with.
+  const live = form.value.status === 'draft';
   return {
     id: invoiceId.value ?? 0,
     invoice_number: form.value.invoice_number,
@@ -97,13 +101,17 @@ const previewInvoice = computed<InvoiceDetail | null>(() => {
     paid_date: base?.paid_date ?? null,
     hourly_rate_cents: rateCents.value,
     tax_rate: taxRate.value,
-    customer_name: base?.customer_name ?? customer?.name ?? '',
-    customer_address_1: base?.customer_address_1 ?? customer?.address_1 ?? '',
-    customer_address_2: base?.customer_address_2 ?? customer?.address_2 ?? '',
-    business_name: base?.business_name ?? settings.business_name,
-    business_address_1: base?.business_address_1 ?? settings.business_address_1,
-    business_address_2: base?.business_address_2 ?? settings.business_address_2,
-    terms_html: base?.terms_html ?? settings.default_terms_html,
+    customer_name: (live ? customer?.name : base?.customer_name) ?? customer?.name ?? '',
+    customer_address_1:
+      (live ? customer?.address_1 : base?.customer_address_1) ?? customer?.address_1 ?? '',
+    customer_address_2:
+      (live ? customer?.address_2 : base?.customer_address_2) ?? customer?.address_2 ?? '',
+    business_name: (live ? settings.business_name : base?.business_name) ?? settings.business_name,
+    business_address_1:
+      (live ? settings.business_address_1 : base?.business_address_1) ?? settings.business_address_1,
+    business_address_2:
+      (live ? settings.business_address_2 : base?.business_address_2) ?? settings.business_address_2,
+    terms_html: (live ? settings.default_terms_html : base?.terms_html) ?? settings.default_terms_html,
     notes: form.value.notes || null,
     created_at: base?.created_at ?? '',
     updated_at: base?.updated_at ?? '',

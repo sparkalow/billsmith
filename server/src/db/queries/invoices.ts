@@ -168,14 +168,54 @@ const UPDATABLE = [
     'terms_html', 'notes',
 ] as const;
 
+/**
+ * The customer and business fields a draft re-copies on every save.
+ *
+ * A draft is still being written, so it should say what the customer and settings
+ * records say today. Once it leaves draft the snapshot freezes for good, which is
+ * what keeps a later address change out of an already-issued invoice.
+ */
+function draftSnapshot(db: Db, customerId: number): UpdateInvoiceInput {
+    const customer = get<CustomerRow>(db, 'SELECT * FROM customers WHERE id = ?', customerId);
+    // An unknown customer id is left to the foreign-key constraint to reject.
+    if (!customer) {return {};}
+
+    const settings = get<SettingsRow>(db, 'SELECT * FROM settings WHERE id = 1')!;
+
+    return {
+        customer_name: customer.name,
+        customer_address_1: customer.address_1,
+        customer_address_2: customer.address_2,
+        business_name: settings.business_name,
+        business_address_1: settings.business_address_1,
+        business_address_2: settings.business_address_2,
+        terms_html: settings.default_terms_html,
+    };
+}
+
 export function updateInvoice(
     db: Db,
     id: number,
     patch: UpdateInvoiceInput,
 ): InvoiceDetail | null {
+    const current = get<Pick<InvoiceRow, 'status' | 'customer_id'>>(
+        db,
+        'SELECT status, customer_id FROM invoices WHERE id = ?',
+        id,
+    );
+    if (!current) {return null;}
+
+    // Read the stored status, not the patched one: a draft being marked sent still
+    // re-syncs on that save, so it freezes with the addresses current at issue time.
+    // Anything explicit in the patch outranks the re-synced value.
+    const merged: UpdateInvoiceInput =
+        current.status === 'draft'
+            ? { ...draftSnapshot(db, patch.customer_id ?? current.customer_id), ...patch }
+            : patch;
+
     const entries = UPDATABLE
-        .filter((col) => patch[col] !== undefined)
-        .map((col) => [col, patch[col] ?? null] as const);
+        .filter((col) => merged[col] !== undefined)
+        .map((col) => [col, merged[col] ?? null] as const);
 
     if (entries.length === 0) {return getInvoice(db, id);}
 
