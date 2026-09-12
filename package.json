@@ -17,7 +17,8 @@
     "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace client",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "db:migrate": "tsx scripts/migrate.ts"
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:backup": "mkdir -p data/backups && sqlite3 data/invoices.db \".backup 'data/backups/billsmith-$(date +%F).db'\""
   },
   "devDependencies": {
     "eslint": "^10.8.0",
